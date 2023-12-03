@@ -3,7 +3,7 @@ torch
 torchvision  
 opencv-python
 numpy 
-os-sys
+dlib
 random2
 pandas 
 matplotlib
