@@ -9,6 +9,7 @@ import random
 import pandas as pd
 import glob
 import matplotlib.pyplot as plt
+import dlib
 
 # define model class
 
@@ -40,7 +41,7 @@ class MyModel(nn.Module):
 model = MyModel(2)
 
 device = torch.device('cpu')
-PATH = "D:\docs\7th sem\major project 1\VS_Code\model(1) - Copy.pth"
+PATH = "D:/docs/7th sem/major project 1/VS_Code/model(1).pth"
 model.load_state_dict(torch.load(PATH, map_location=device))
 model.eval()
 
@@ -121,7 +122,7 @@ def preprocess(random_video_path):
     processed_frames = [data_transform(frame) for frame in video_frames]
     video_tensor = torch.stack(processed_frames)
     # Ensure that the sequence_length parameter matches the one used during training
-    sequence_length = 60
+    sequence_length = 10
     video_tensor = video_tensor[:sequence_length]
     return video_tensor
 
@@ -143,16 +144,40 @@ def predict(video_tensor):
 
             # Accumulate predicted labels
             predicted_labels.append(predicted_label)
-            return predicted_labels   
+    return predicted_labels   
 
 
 def output_predict(predicted_labels):
-    # Calculate overall accuracy
-    overall_accuracy = (predicted_labels.count(1) / len(predicted_labels)) * 100.0
+    # Calculate the number of 'REAL' and 'FAKE' predictions
+    num_real = predicted_labels.count(1)
+    num_fake = len(predicted_labels) - num_real
+
+    # Calculate accuracies for 'REAL' and 'FAKE'
+    real_accuracy = (num_real / len(predicted_labels)) * 100.0
+    fake_accuracy = (num_fake / len(predicted_labels)) * 100.0
+
+    
 
     # Determine the overall predicted label
-    overall_predicted_label = 1 if overall_accuracy > 50 else 0
+    if real_accuracy > fake_accuracy:
+      print(f"THE VIDEO IS REAL    Accuracy: {real_accuracy:.2f}%")
+    else:
+      print(f"THE VIDEO IS FAKE    Accuracy: {100-fake_accuracy:.2f}%")
+   
+    
 
-    # Print or use the results
-    print(f"Overall Accuracy: {overall_accuracy:.2f}%")
-    print(f"Overall Prediction: {'REAL' if overall_predicted_label == 1 else 'FAKE'}")
+
+
+
+
+    """
+         
+        except:
+            return jsonify({'error': 'error during prediction'})
+
+    return render_template('index.html')
+
+
+app.run(debug=True)
+
+"""
