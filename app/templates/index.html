@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Deepfake Detection</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-
 </head>
 <body>
     <header>
@@ -24,10 +23,11 @@
         <section>
             <h2>Results</h2>
             <div id="detectionResults">
-                <!-- Detection results will be displayed here -->
+                {% if result %}
+                    <p>{{ result }}</p>
+                {% endif %}
             </div>
         </section>
     </main>
 </body>
 </html>
-
